@@ -1,3 +1,7 @@
-export default interface NewsEntry {
-  id: string;
+export type NewsEntryIdentifier = string;
+
+export default class NewsEntry {
+  id: NewsEntryIdentifier;
+  title: string;
+  url: string;
 }

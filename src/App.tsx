@@ -1,33 +1,17 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { State } from './reducers';
+
+import NavBar from './NavBar';
+import NewsView from './NewsView';
 
 import './App.css';
 
-const logo = require('./logo.svg');
-
-interface IProps { 
-  state: State;
-}
-
-class App extends React.Component<IProps> {
+export default class App extends React.Component {
   render() {
-    (window as any).state = this.props.state;
-    console.log(logo);
     return (
       <div className="App">
-        Subscribed to {Object.keys(this.props.state.subscribedSources).length} sources
+        <NavBar />
+        <NewsView />
       </div>
     );
   }
 }
-
-const mapStateToProps = (state: State) => {
-  return { state };
-};
-
-const ConnectedApp = connect(
-  mapStateToProps,
-)(App);
-
-export default ConnectedApp;

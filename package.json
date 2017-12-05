@@ -10,6 +10,7 @@
     "react-scripts-ts": "2.8.0",
     "redux": "^3.7.2",
     "redux-localstorage": "^0.4.1",
+    "redux-thunk": "^2.2.0",
     "typescript": "^2.6.0"
   },
   "scripts": {
