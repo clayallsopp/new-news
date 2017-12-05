@@ -1,12 +1,12 @@
-import * as React from 'react';
+import * as React from "react";
 
-import NavBar from './NavBar';
-import NewsView from './NewsView';
+import NavBar from "./NavBar";
+import NewsView from "./NewsView";
 
-import './App.css';
+import "./App.css";
 
 export default class App extends React.Component {
-  render() {
+  public render() {
     return (
       <div className="App">
         <NavBar />

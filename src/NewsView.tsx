@@ -1,31 +1,29 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { State } from './reducers';
+import * as React from "react";
+import { connect } from "react-redux";
+import { IState } from "./reducers";
 
-import { NewsSourceIdentifier } from './NewsSource';
-import SourceView from './SourceView';
+import { NewsSourceIdentifier } from "./NewsSource";
+import SourceView from "./SourceView";
 
-import './NewsView.css';
+import "./NewsView.css";
 
-interface Props {
+interface IProps {
   sources: NewsSourceIdentifier[];
 }
 
-class NewsView extends React.Component<Props> {
-  render() {
+class NewsView extends React.Component<IProps> {
+  public render() {
     if (this.props.sources.length === 0) {
-      return (
-        <div>
-          Add sources
-        </div>
-      );
+      return <div>Add sources</div>;
     }
 
-    const sourceViews = this.props.sources.map((sourceIdentifier) => {
-      return <SourceView identifier={sourceIdentifier} key={sourceIdentifier} />;
+    const sourceViews = this.props.sources.map(sourceIdentifier => {
+      return (
+        <SourceView identifier={sourceIdentifier} key={sourceIdentifier} />
+      );
     });
 
-    const buffer = <div style={{height: '100vh'}} />;    
+    const buffer = <div style={{ height: "100vh" }} />;
 
     return (
       <div className="NewsView">
@@ -36,7 +34,7 @@ class NewsView extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state: IState) => {
   return { sources: Object.keys(state.subscribedSources) };
 };
 

@@ -1,42 +1,42 @@
-import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
-import { State } from './reducers';
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import { IState } from "./reducers";
 
-import { actionCreators } from './actions';
+import { actionCreators } from "./actions";
 
-import NewsSource, { NewsSourceIdentifier } from './NewsSource';
-import { NewsEntryIdentifier } from './NewsEntry';
+import { NewsEntryIdentifier } from "./NewsEntry";
+import NewsSource, { NewsSourceIdentifier } from "./NewsSource";
 
-import EntryView from './EntryView';
+import EntryView from "./EntryView";
 
-interface Props {
+interface IProps {
   identifier: NewsSourceIdentifier;
   source?: NewsSource;
   entries?: NewsEntryIdentifier[];
   startLoad?: (source: NewsSource) => void;
 }
 
-class SourceView extends React.Component<Props> {
-  componentDidMount() {
+class SourceView extends React.Component<IProps> {
+  public componentDidMount() {
     this._maybeLoadSource();
   }
 
-  componentDidUpdate() {
+  public componentDidUpdate() {
     this._maybeLoadSource();
   }
 
-  render() {
+  public render() {
     if (!this.props.source) {
       return <div />;
     }
 
     const sourceHeader = <div>{this.props.source.identifier}</div>;
 
-    let detail: JSX.Element | undefined = undefined;
+    let detail: JSX.Element | undefined;
     if (this.props.source.isLoading) {
       detail = <div>Loading...</div>;
     } else if (this.props.source.isLoaded && this.props.entries) {
-      const entryViews = this.props.entries.map((identifier) => {
+      const entryViews = this.props.entries.map(identifier => {
         return <EntryView identifier={identifier} key={identifier} />;
       });
       detail = <div>{entryViews}</div>;
@@ -47,7 +47,7 @@ class SourceView extends React.Component<Props> {
     return (
       <div>
         {sourceHeader}
-        <div style={{paddingLeft: '20px', paddingRight: '20px'}}>
+        <div style={{ paddingLeft: "20px", paddingRight: "20px" }}>
           {detail}
         </div>
       </div>
@@ -65,18 +65,18 @@ class SourceView extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = (state: State, ownProps: Props): Partial<Props> => {
+const mapStateToProps = (state: IState, ownProps: IProps): Partial<IProps> => {
   return {
-    source: state.subscribedSources[ownProps.identifier],
     entries: state.sourceEntries[ownProps.identifier],
+    source: state.subscribedSources[ownProps.identifier]
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<{}>): Partial<Props> => {
+const mapDispatchToProps = (dispatch: Dispatch<{}>): Partial<IProps> => {
   return {
     startLoad(source: NewsSource) {
       dispatch(actionCreators.startSourceLoad(source.identifier));
-      NewsSource.fetchEntries(source).then((entries) => {
+      NewsSource.fetchEntries(source).then(entries => {
         dispatch(actionCreators.stopSourceLoad(source.identifier, entries));
       });
     }

@@ -1,13 +1,9 @@
-import * as React from 'react';
+import * as React from "react";
 
-import './NavBar.css';
+import "./NavBar.css";
 
 export default class NavBar extends React.Component {
-  render() {
-    return (
-      <div className="NavBar">
-        Nav
-      </div>
-    );
+  public render() {
+    return <div className="NavBar">Nav</div>;
   }
 }

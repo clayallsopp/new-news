@@ -1,7 +1,7 @@
 export type NewsEntryIdentifier = string;
 
 export default class NewsEntry {
-  id: NewsEntryIdentifier;
-  title: string;
-  url: string;
+  public id: NewsEntryIdentifier;
+  public title: string;
+  public url: string;
 }
