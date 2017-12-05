@@ -47,7 +47,9 @@ class SourceView extends React.Component<Props> {
     return (
       <div>
         {sourceHeader}
-        {detail}
+        <div style={{paddingLeft: '20px', paddingRight: '20px'}}>
+          {detail}
+        </div>
       </div>
     );
   }

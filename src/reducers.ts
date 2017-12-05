@@ -22,6 +22,7 @@ export const initialState: State = {
   subscribedSources: {
     'reddit:movies': new NewsSource('reddit:movies', false, false),
     'reddit:politics': new NewsSource('reddit:politics', false, false),    
+    'hackernews': new NewsSource('hackernews', false, false),    
   },
   sourceEntries: {},
   entries: {},

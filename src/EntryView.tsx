@@ -6,6 +6,8 @@ import { actionCreators } from './actions';
 
 import NewsEntry, { NewsEntryIdentifier } from './NewsEntry';
 
+import './EntryView.css';
+
 interface Props {
   identifier: NewsEntryIdentifier;
   entry?: NewsEntry;
@@ -35,7 +37,7 @@ class EntryView extends React.Component<Props> {
 
     return (
       <div style={{ opacity: this.props.seen ? 0.5 : 1 }}>
-        <a href={this.props.entry.url} target="_blank">{this.props.entry.title}</a>
+        <a className="EntryViewLink" href={this.props.entry.url} target="_blank">{this.props.entry.title}</a>
       </div>
     );
   }
