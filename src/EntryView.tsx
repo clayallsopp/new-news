@@ -52,7 +52,7 @@ class EntryView extends React.Component<Props> {
       }
 
       const node = ReactDOM.findDOMNode(this);
-      if (node.getBoundingClientRect().top < 0) {
+      if (node.getBoundingClientRect().bottom < 0) {
         this.props.markEntryAsSeen(this.props.entry);
       }
       this._ticking = false;
