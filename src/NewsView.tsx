@@ -5,6 +5,8 @@ import { State } from './reducers';
 import { NewsSourceIdentifier } from './NewsSource';
 import SourceView from './SourceView';
 
+import './NewsView.css';
+
 interface Props {
   sources: NewsSourceIdentifier[];
 }
@@ -23,9 +25,12 @@ class NewsView extends React.Component<Props> {
       return <SourceView identifier={sourceIdentifier} key={sourceIdentifier} />;
     });
 
+    const buffer = <div style={{height: '100vh'}} />;    
+
     return (
-      <div>
+      <div className="NewsView">
         {sourceViews}
+        {buffer}
       </div>
     );
   }

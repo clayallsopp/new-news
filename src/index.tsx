@@ -6,18 +6,12 @@ import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
 import { Provider } from 'react-redux';
-import { createStore, compose, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-// import persistState from 'redux-localstorage';
+import { createStore } from 'redux';
 
 import reducers, { State } from './reducers';
 
 let store = createStore(
   reducers as Reducer<State>,
-  compose(
-    applyMiddleware(thunk),
-    // persistState()
-  ),
 );
 
 ReactDOM.render(

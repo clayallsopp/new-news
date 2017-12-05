@@ -16,7 +16,7 @@ const fetchSubredditEntries = (subreddit: string): Promise<NewsEntry[]> => {
   }).then((entries) => {
     return entries.map((redditEntry) => {
       const newsEntry = new NewsEntry();
-      newsEntry.id = redditEntry.id;
+      newsEntry.id = `reddit:${redditEntry.id}`;
       newsEntry.title = redditEntry.title;
       newsEntry.url = `https://reddit.com${redditEntry.permalink}`;
       return newsEntry;

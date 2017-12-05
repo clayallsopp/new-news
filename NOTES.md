@@ -32,7 +32,7 @@ AppView
           - Check if loaded, else start loading
         -> ...ItemView
           - On component mount, store the layout position(?)
-      - On scroll, 
+      - On window scroll, update redux
     -> SubscribeView
       -> ...DiscreteSubscriptionView
       -> ...DynamicSubscriptionView
