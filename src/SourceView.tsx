@@ -5,14 +5,14 @@ import { State } from './reducers';
 import { actionCreators } from './actions';
 
 import NewsSource, { NewsSourceIdentifier } from './NewsSource';
-import NewsEntry from './NewsEntry';
+import { NewsEntryIdentifier } from './NewsEntry';
 
 import EntryView from './EntryView';
 
 interface Props {
   identifier: NewsSourceIdentifier;
   source?: NewsSource;
-  entries?: NewsEntry[];
+  entries?: NewsEntryIdentifier[];
   startLoad?: (source: NewsSource) => void;
 }
 
@@ -36,7 +36,9 @@ class SourceView extends React.Component<Props> {
     if (this.props.source.isLoading) {
       detail = <div>Loading...</div>;
     } else if (this.props.source.isLoaded && this.props.entries) {
-      const entryViews = this.props.entries.map((entry) => <EntryView entry={entry} key={entry.id} />);
+      const entryViews = this.props.entries.map((identifier) => {
+        return <EntryView identifier={identifier} key={identifier} />;
+      });
       detail = <div>{entryViews}</div>;
     } else {
       detail = <div />;

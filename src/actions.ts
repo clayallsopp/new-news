@@ -6,7 +6,6 @@ export const SOURCE_UNSUBSCRIBE = 'SOURCE_UNSUBSCRIBE';
 export const SOURCE_START_LOAD = 'SOURCE_START_LOAD';
 export const SOURCE_STOP_LOAD = 'SOURCE_STOP_LOAD';
 export const ENTRY_MARK_SEEN = 'ENTRY_MARK_SEEN';
-export const WINDOW_SCROLL_SET = 'WINDOW_SCROLL_SET';
 
 export type Actions = {
   SOURCE_SUBSCRIBE: {
@@ -29,10 +28,6 @@ export type Actions = {
   ENTRY_MARK_SEEN: {
     type: typeof ENTRY_MARK_SEEN,
     identifier: NewsEntryIdentifier;
-  },
-  WINDOW_SCROLL_SET: {
-    type: typeof WINDOW_SCROLL_SET,
-    scroll: number,
   },
 };
 
@@ -57,9 +52,5 @@ export const actionCreators = {
   markEntryAsSeen: (identifier: NewsEntryIdentifier): Actions[typeof ENTRY_MARK_SEEN] => ({
     type: ENTRY_MARK_SEEN,
     identifier,
-  }),
-  setWindowScroll: (scroll: number): Actions[typeof WINDOW_SCROLL_SET] => ({
-    type: WINDOW_SCROLL_SET,
-    scroll,
   }),
 };

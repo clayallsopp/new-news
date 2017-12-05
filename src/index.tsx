@@ -10,8 +10,12 @@ import { createStore } from 'redux';
 
 import reducers, { State } from './reducers';
 
+// tslint:disable-next-line no-any
+const devtools = (window as any).__REDUX_DEVTOOLS_EXTENSION__;
+
 let store = createStore(
   reducers as Reducer<State>,
+  devtools && devtools()
 );
 
 ReactDOM.render(
