@@ -6,6 +6,13 @@ export const SOURCE_UNSUBSCRIBE = "SOURCE_UNSUBSCRIBE";
 export const SOURCE_START_LOAD = "SOURCE_START_LOAD";
 export const SOURCE_STOP_LOAD = "SOURCE_STOP_LOAD";
 export const ENTRY_MARK_SEEN = "ENTRY_MARK_SEEN";
+export const SCROLL_CALLBACK_ADD = "SCROLL_CALLBACK_ADD";
+
+export type EntryScrollCheckCallback = () => {
+  seen: boolean;
+  entry: NewsEntry | undefined;
+  skip: boolean;
+};
 
 export interface IActions {
   SOURCE_SUBSCRIBE: {
@@ -27,15 +34,25 @@ export interface IActions {
   };
   ENTRY_MARK_SEEN: {
     type: typeof ENTRY_MARK_SEEN;
-    identifier: NewsEntryIdentifier;
+    identifiers: NewsEntryIdentifier[];
+  };
+  SCROLL_CALLBACK_ADD: {
+    type: typeof SCROLL_CALLBACK_ADD;
+    callback: EntryScrollCheckCallback;
   };
 }
 
 export const actionCreators = {
-  markEntryAsSeen: (
-    identifier: NewsEntryIdentifier
+  addEntryListener: (
+    callback: EntryScrollCheckCallback
+  ): IActions[typeof SCROLL_CALLBACK_ADD] => ({
+    callback,
+    type: SCROLL_CALLBACK_ADD
+  }),
+  markEntriesAsSeen: (
+    identifiers: NewsEntryIdentifier[]
   ): IActions[typeof ENTRY_MARK_SEEN] => ({
-    identifier,
+    identifiers,
     type: ENTRY_MARK_SEEN
   }),
   startSourceLoad: (

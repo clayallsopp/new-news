@@ -1,6 +1,8 @@
 import {
   ENTRY_MARK_SEEN,
+  EntryScrollCheckCallback,
   IActions,
+  SCROLL_CALLBACK_ADD,
   SOURCE_START_LOAD,
   SOURCE_STOP_LOAD,
   SOURCE_SUBSCRIBE,
@@ -11,6 +13,8 @@ import * as LRU from "lru-cache";
 
 import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 import NewsSource from "./NewsSource";
+
+export type EntryScrollCheckCallback = EntryScrollCheckCallback;
 
 export interface IState {
   subscribedSources: {
@@ -23,6 +27,7 @@ export interface IState {
     [entryIdentifier: string]: NewsEntry;
   };
   seenItems: LRU.Cache<NewsEntryIdentifier, boolean>;
+  scrollCallbacks: EntryScrollCheckCallback[];
 }
 
 interface ISerializedState {
@@ -65,6 +70,7 @@ initialLRU.load(initialSerializedState.seenItems);
 
 export const initialState: IState = {
   entries: {},
+  scrollCallbacks: [],
   seenItems: initialLRU,
   sourceEntries: {},
   subscribedSources: initialSubscribedSources
@@ -113,8 +119,14 @@ const reducer = (state = initialState, action: IActions[keyof IActions]) => {
       return { ...state };
     }
     case ENTRY_MARK_SEEN: {
-      state.seenItems.set(action.identifier, true);
+      action.identifiers.forEach(identifier => {
+        state.seenItems.set(identifier, true);
+      });
       serialize(state);
+      return { ...state };
+    }
+    case SCROLL_CALLBACK_ADD: {
+      state.scrollCallbacks.push(action.callback);
       return { ...state };
     }
     default:

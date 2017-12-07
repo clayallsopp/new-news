@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { connect, Dispatch } from "react-redux";
 import { actionCreators } from "./actions";
-import { IState } from "./reducers";
+import { EntryScrollCheckCallback, IState } from "./reducers";
 
 import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 
@@ -12,22 +12,15 @@ interface IProps {
   identifier: NewsEntryIdentifier;
   entry?: NewsEntry;
   seen?: boolean;
-  markEntryAsSeen?: (entry: NewsEntry) => void;
+  addEntryListener?: (cb: EntryScrollCheckCallback) => void;
 }
 
 class EntryView extends React.Component<IProps> {
-  private ticking: boolean;
-
   public componentDidMount() {
-    const node = ReactDOM.findDOMNode(this);
-    const window = node.ownerDocument.defaultView;
-    window.addEventListener("scroll", this.onScroll);
-  }
-
-  public componentWillUnmount() {
-    const node = ReactDOM.findDOMNode(this);
-    const window = node.ownerDocument.defaultView;
-    window.removeEventListener("scroll", this.onScroll);
+    if (!this.props.addEntryListener) {
+      return;
+    }
+    this.props.addEntryListener(this.onScroll);
   }
 
   public render() {
@@ -48,22 +41,21 @@ class EntryView extends React.Component<IProps> {
     );
   }
 
-  private onScroll = () => {
-    if (this.ticking || this.props.seen) {
-      return;
+  private onScroll: EntryScrollCheckCallback = () => {
+    if (this.props.seen) {
+      return {
+        entry: this.props.entry,
+        seen: true,
+        skip: true,
+      };
     }
-    window.requestAnimationFrame(() => {
-      if (!this.props.markEntryAsSeen || !this.props.entry) {
-        return;
-      }
 
-      const node = ReactDOM.findDOMNode(this);
-      if (node.getBoundingClientRect().bottom < 0) {
-        this.props.markEntryAsSeen(this.props.entry);
-      }
-      this.ticking = false;
-    });
-    this.ticking = true;
+    const node = ReactDOM.findDOMNode(this);
+    return {
+      entry: this.props.entry,
+      seen: node.getBoundingClientRect().bottom < 0,
+      skip: false
+    };
   };
 }
 
@@ -76,8 +68,8 @@ const mapStateToProps = (state: IState, ownProps: IProps): Partial<IProps> => {
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>): Partial<IProps> => {
   return {
-    markEntryAsSeen(entry: NewsEntry) {
-      dispatch(actionCreators.markEntryAsSeen(entry.id));
+    addEntryListener(cb: EntryScrollCheckCallback) {
+      dispatch(actionCreators.addEntryListener(cb));
     }
   };
 };
