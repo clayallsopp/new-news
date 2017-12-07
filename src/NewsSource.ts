@@ -1,4 +1,6 @@
-import NewsEntry from "./NewsEntry";
+import * as LRU from "lru-cache";
+
+import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 
 export type NewsSourceIdentifier = string;
 
@@ -35,20 +37,26 @@ const fetchSubredditEntries = (subreddit: string): Promise<NewsEntry[]> => {
     });
 };
 
-const fetchHackerNewsEntries = (): Promise<NewsEntry[]> => {
+const fetchHackerNewsEntries = (
+  seenItems: LRU.Cache<NewsEntryIdentifier, boolean>
+): Promise<NewsEntry[]> => {
   return fetch("https://hacker-news.firebaseio.com/v0/topstories.json")
     .then(res => {
       return res.json();
     })
     .then((ids: number[]) => {
       const promises = ids.slice(0, 25).map(id => {
+        const internalIdentifier = `hn:${id}`;
+        const newsEntry = new NewsEntry();
+        newsEntry.id = internalIdentifier;
+        if (seenItems.get(internalIdentifier)) {
+          return newsEntry;
+        }
         return fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
           .then(res => {
             return res.json();
           })
           .then((data: IHackerNewsEntryData) => {
-            const newsEntry = new NewsEntry();
-            newsEntry.id = `hn:${data.id}`;
             newsEntry.title = data.title;
             newsEntry.url = `https://news.ycombinator.com/item?id=${data.id}`;
             return newsEntry;
@@ -59,12 +67,15 @@ const fetchHackerNewsEntries = (): Promise<NewsEntry[]> => {
 };
 
 export default class NewsSource {
-  public static fetchEntries(source: NewsSource) {
+  public static fetchEntries(
+    source: NewsSource,
+    seenItems: LRU.Cache<NewsEntryIdentifier, boolean>
+  ) {
     if (source.identifier.startsWith("reddit:")) {
       return fetchSubredditEntries(source.identifier.split("reddit:")[1]);
     }
     if (source.identifier === "hackernews") {
-      return fetchHackerNewsEntries();
+      return fetchHackerNewsEntries(seenItems);
     }
     return fetchSubredditEntries("popular");
   }

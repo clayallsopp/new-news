@@ -1,3 +1,4 @@
+import * as LRU from "lru-cache";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { IState } from "./reducers";
@@ -13,7 +14,8 @@ interface IProps {
   identifier: NewsSourceIdentifier;
   source?: NewsSource;
   entries?: NewsEntryIdentifier[];
-  startLoad?: (source: NewsSource) => void;
+  startLoad?: (source: NewsSource, seenItems: LRU.Cache<NewsEntryIdentifier, boolean>) => void;
+  seenItems?: LRU.Cache<NewsEntryIdentifier, boolean>;
 }
 
 class SourceView extends React.Component<IProps> {
@@ -55,12 +57,12 @@ class SourceView extends React.Component<IProps> {
   }
 
   private _maybeLoadSource() {
-    if (!this.props.source || !this.props.startLoad) {
+    if (!this.props.source || !this.props.startLoad || !this.props.seenItems) {
       return;
     }
 
     if (!this.props.source.isLoaded && !this.props.source.isLoading) {
-      this.props.startLoad(this.props.source);
+      this.props.startLoad(this.props.source, this.props.seenItems);
     }
   }
 }
@@ -68,15 +70,16 @@ class SourceView extends React.Component<IProps> {
 const mapStateToProps = (state: IState, ownProps: IProps): Partial<IProps> => {
   return {
     entries: state.sourceEntries[ownProps.identifier],
-    source: state.subscribedSources[ownProps.identifier]
+    seenItems: state.seenItems,    
+    source: state.subscribedSources[ownProps.identifier],
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<{}>): Partial<IProps> => {
   return {
-    startLoad(source: NewsSource) {
+    startLoad(source: NewsSource, seenItems: LRU.Cache<NewsEntryIdentifier, boolean>) {
       dispatch(actionCreators.startSourceLoad(source.identifier));
-      NewsSource.fetchEntries(source).then(entries => {
+      NewsSource.fetchEntries(source, seenItems).then(entries => {
         dispatch(actionCreators.stopSourceLoad(source.identifier, entries));
       });
     }
