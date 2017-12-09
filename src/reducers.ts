@@ -39,7 +39,7 @@ const localStorageKey = "new_news_1";
 const getSerializedState = (): ISerializedState | undefined => {
   const jsonString = window.localStorage[localStorageKey];
   if (jsonString) {
-    return undefined; //JSON.parse(jsonString);
+    return JSON.parse(jsonString);
   } else {
     return undefined;
   }
