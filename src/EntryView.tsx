@@ -6,7 +6,8 @@ import { EntryScrollCheckCallback, IState } from "./reducers";
 
 import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 
-import { ListItem, ListItemText } from 'material-ui/List';
+import Button from 'material-ui/Button';
+import { ListItem } from 'material-ui/List';
 
 import "./EntryView.css";
 
@@ -31,9 +32,15 @@ class EntryView extends React.Component<IProps> {
     }
 
     return (
-      <ListItem href={this.props.entry.url}
-      target="_blank" style={{ opacity: this.props.seen ? 0.5 : 1 }} button>
-        <ListItemText primary={this.props.entry.title} />
+      <ListItem
+         style={{ opacity: this.props.seen ? 0.5 : 1 }}
+         disableGutters
+        >
+        <Button
+                href={this.props.entry.url}
+                target="_blank">
+        {this.props.entry.title}
+        </Button>
       </ListItem>
     );
   }
