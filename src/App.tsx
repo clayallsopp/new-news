@@ -34,7 +34,9 @@ class App extends React.Component<IProps> {
     return (
       <div className="App">
         <NavBar />
-        <NewsView />
+        <div className='AppContainer'>
+          <NewsView />
+        </div>
       </div>
     );
   }

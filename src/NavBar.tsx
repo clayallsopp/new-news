@@ -1,9 +1,17 @@
-import * as React from "react";
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import Typography from 'material-ui/Typography';
 
-import "./NavBar.css";
+import * as React from "react";
 
 export default class NavBar extends React.Component {
   public render() {
-    return <div className="NavBar">Nav</div>;
+    return <AppBar>
+      <Toolbar>
+        <Typography type="title" color="inherit">
+          The New News
+        </Typography>
+      </Toolbar>
+    </AppBar>;
   }
 }

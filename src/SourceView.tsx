@@ -8,6 +8,9 @@ import { actionCreators } from "./actions";
 import { NewsEntryIdentifier } from "./NewsEntry";
 import NewsSource, { NewsSourceIdentifier } from "./NewsSource";
 
+import { ListItem, ListItemText } from 'material-ui/List';
+import ListSubheader from 'material-ui/List/ListSubheader';
+
 import EntryView from "./EntryView";
 
 interface IProps {
@@ -32,28 +35,24 @@ class SourceView extends React.Component<IProps> {
       return <div />;
     }
 
-    const sourceHeader = <div>{this.props.source.identifier}</div>;
+    const sourceHeader = <ListSubheader key='subheader'>{this.props.source.identifier}</ListSubheader>;
 
-    let detail: JSX.Element | undefined;
+    let detail: JSX.Element | JSX.Element[] | undefined;
     if (this.props.source.isLoading) {
-      detail = <div>Loading...</div>;
+      detail = <ListItem key='loading'><ListItemText primary='Loading...' /></ListItem>;
     } else if (this.props.source.isLoaded && this.props.entries) {
       const entryViews = this.props.entries.map(identifier => {
         return <EntryView identifier={identifier} key={identifier} />;
       });
-      detail = <div>{entryViews}</div>;
+      detail = entryViews;
     } else {
-      detail = <div />;
+      detail = <ListItem key='empty' />;
     }
 
-    return (
-      <div>
-        {sourceHeader}
-        <div style={{ paddingLeft: "20px", paddingRight: "20px" }}>
-          {detail}
-        </div>
-      </div>
-    );
+    return [
+      sourceHeader,
+      detail,
+    ];
   }
 
   private _maybeLoadSource() {

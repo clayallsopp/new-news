@@ -6,6 +6,8 @@ import { EntryScrollCheckCallback, IState } from "./reducers";
 
 import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 
+import { ListItem, ListItemText } from 'material-ui/List';
+
 import "./EntryView.css";
 
 interface IProps {
@@ -29,15 +31,10 @@ class EntryView extends React.Component<IProps> {
     }
 
     return (
-      <div style={{ opacity: this.props.seen ? 0.5 : 1 }}>
-        <a
-          className="EntryViewLink"
-          href={this.props.entry.url}
-          target="_blank"
-        >
-          {this.props.entry.title}
-        </a>
-      </div>
+      <ListItem href={this.props.entry.url}
+      target="_blank" style={{ opacity: this.props.seen ? 0.5 : 1 }} button>
+        <ListItemText primary={this.props.entry.title} />
+      </ListItem>
     );
   }
 

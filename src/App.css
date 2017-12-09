@@ -1,4 +1,6 @@
-.App {
-  display: flex;
-  flex-direction: column;
+.AppContainer {
+  margin-top: 65px;
+  position: relative;
+  max-height: 100vh;
+  overflow: auto;
 }
