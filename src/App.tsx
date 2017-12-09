@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { connect, Dispatch } from "react-redux";
 
 import { actionCreators } from "./actions";
@@ -18,23 +17,11 @@ interface IProps {
 class App extends React.Component<IProps> {
   private ticking: boolean;
   
-  public componentDidMount() {
-    const node = ReactDOM.findDOMNode(this);
-    const window = node.ownerDocument.defaultView;
-    window.addEventListener("scroll", this.onScroll);
-  }
-
-  public componentWillUnmount() {
-    const node = ReactDOM.findDOMNode(this);
-    const window = node.ownerDocument.defaultView;
-    window.removeEventListener("scroll", this.onScroll);
-  }
-
   public render() {
     return (
       <div className="App">
         <NavBar />
-        <div className='AppContainer'>
+        <div className='AppContainer' ref={(ref) => ref && ref.addEventListener('scroll', this.onScroll)}>
           <NewsView />
         </div>
       </div>
