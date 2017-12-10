@@ -8,8 +8,33 @@ import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 
 import Button from 'material-ui/Button';
 import { ListItem } from 'material-ui/List';
+import { Theme, withStyles, WithStyles } from 'material-ui/styles';
 
 import "./EntryView.css";
+
+const styles = (theme: Theme) => ({
+  button: {
+    borderRadius: 0,
+    justifyContent: 'flex-start' as 'flex-start',
+    paddingBottom: 16,    
+    paddingTop: 16,
+    textTransform: 'none',
+    transition: theme.transitions.create('background-color', {
+      duration: theme.transitions.duration.shortest,
+    }),
+    width: '100%',
+
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
+  navLink: {
+    display: 'flex',    
+    fontWeight: theme.typography.fontWeightRegular,
+    paddingBottom: 0,    
+    paddingTop: 0,
+  },
+});
 
 interface IProps {
   identifier: NewsEntryIdentifier;
@@ -18,7 +43,7 @@ interface IProps {
   addEntryListener?: (cb: EntryScrollCheckCallback) => void;
 }
 
-class EntryView extends React.Component<IProps> {
+class EntryView extends React.Component<IProps & WithStyles<'button' | 'navLink'>> {
   public componentDidMount() {
     if (!this.props.addEntryListener) {
       return;
@@ -33,11 +58,13 @@ class EntryView extends React.Component<IProps> {
 
     return (
       <ListItem
+        className={this.props.classes.navLink}
          style={{ opacity: this.props.seen ? 0.5 : 1 }}
          disableGutters
         >
         <Button
                 href={this.props.entry.url}
+                className={this.props.classes.button}
                 target="_blank">
         {this.props.entry.title}
         </Button>
@@ -78,4 +105,6 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): Partial<IProps> => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntryView);
+const Styled = withStyles(styles)(EntryView);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Styled);
