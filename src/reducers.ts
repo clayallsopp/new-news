@@ -35,7 +35,7 @@ interface ISerializedState {
   seenItems: Array<LRU.LRUEntry<NewsEntryIdentifier, boolean>>;
 }
 
-const localStorageKey = "new_news_1";
+const localStorageKey = "new_news_2";
 const getSerializedState = (): ISerializedState | undefined => {
   const jsonString = window.localStorage[localStorageKey];
   if (jsonString) {
@@ -54,7 +54,7 @@ const serialize = (state: IState) => {
 
 const initialSerializedState = getSerializedState() || {
   seenItems: [],
-  subscribedSources: ["reddit:movies", "reddit:politics", "hackernews"]
+  subscribedSources: ["reddit:movies", "reddit:politics", "hackernews", "cnn"]
 };
 
 const initialSubscribedSources = initialSerializedState.subscribedSources.reduce(
