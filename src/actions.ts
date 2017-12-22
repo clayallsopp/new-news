@@ -1,6 +1,8 @@
 import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 import { NewsSourceIdentifier } from "./NewsSource";
+import { ISerializedState } from "./server";
 
+export const SERVER_INITIALIZED = "SERVER_INITIALIZED";
 export const SOURCE_SUBSCRIBE = "SOURCE_SUBSCRIBE";
 export const SOURCE_UNSUBSCRIBE = "SOURCE_UNSUBSCRIBE";
 export const SOURCE_START_LOAD = "SOURCE_START_LOAD";
@@ -15,6 +17,10 @@ export type EntryScrollCheckCallback = () => {
 };
 
 export interface IActions {
+  SERVER_INITIALIZED: {
+    type: typeof SERVER_INITIALIZED;
+    serializedState: ISerializedState | null;
+  };
   SOURCE_SUBSCRIBE: {
     type: typeof SOURCE_SUBSCRIBE;
     sourceIdentifier: NewsSourceIdentifier;
@@ -54,6 +60,12 @@ export const actionCreators = {
   ): IActions[typeof ENTRY_MARK_SEEN] => ({
     identifiers,
     type: ENTRY_MARK_SEEN
+  }),
+  onServerInitialized: (
+    serializedState: ISerializedState | null
+  ): IActions[typeof SERVER_INITIALIZED] => ({
+    serializedState,
+    type: SERVER_INITIALIZED
   }),
   startSourceLoad: (
     sourceIdentifier: NewsSourceIdentifier

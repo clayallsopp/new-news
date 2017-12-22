@@ -3,6 +3,7 @@ import {
   EntryScrollCheckCallback,
   IActions,
   SCROLL_CALLBACK_ADD,
+  SERVER_INITIALIZED,
   SOURCE_START_LOAD,
   SOURCE_STOP_LOAD,
   SOURCE_SUBSCRIBE,
@@ -13,6 +14,8 @@ import * as LRU from "lru-cache";
 
 import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 import NewsSource from "./NewsSource";
+
+import server, { ISerializedState } from "./server";
 
 export type EntryScrollCheckCallback = EntryScrollCheckCallback;
 
@@ -28,56 +31,59 @@ export interface IState {
   };
   seenItems: LRU.Cache<NewsEntryIdentifier, boolean>;
   scrollCallbacks: EntryScrollCheckCallback[];
+  serverInitialized: boolean;
 }
 
-interface ISerializedState {
-  subscribedSources: string[];
-  seenItems: Array<LRU.LRUEntry<NewsEntryIdentifier, boolean>>;
-}
-
-const localStorageKey = "new_news_2";
-const getSerializedState = (): ISerializedState | undefined => {
-  const jsonString = window.localStorage[localStorageKey];
-  if (jsonString) {
-    return JSON.parse(jsonString);
-  } else {
-    return undefined;
-  }
-};
 const serialize = (state: IState) => {
   const serializedState: ISerializedState = {
     seenItems: state.seenItems.dump(),
     subscribedSources: Object.keys(state.subscribedSources)
   };
-  window.localStorage[localStorageKey] = JSON.stringify(serializedState);
+  server.serverSavingLocally = true;
+  server.save(serializedState);
+  server.serverSavingLocally = false;
 };
 
-const initialSerializedState = getSerializedState() || {
+const deserialize = (serializedState: ISerializedState) => {
+  const seenItems = LRU<NewsEntryIdentifier, boolean>();
+  seenItems.load(serializedState.seenItems);
+
+  const subscribedSources = serializedState.subscribedSources.reduce(
+    (acc, id) => {
+      acc[id] = new NewsSource(id, false, false);
+      return acc;
+    },
+    {}
+  );
+
+  return { seenItems, subscribedSources };
+};
+
+const initialSerializedState = {
   seenItems: [],
   subscribedSources: ["reddit:movies", "reddit:politics", "hackernews", "cnn"]
 };
 
-const initialSubscribedSources = initialSerializedState.subscribedSources.reduce(
-  (acc, id) => {
-    acc[id] = new NewsSource(id, false, false);
-    return acc;
-  },
-  {}
-);
-
-const initialLRU = LRU<NewsEntryIdentifier, boolean>();
-initialLRU.load(initialSerializedState.seenItems);
-
 export const initialState: IState = {
   entries: {},
   scrollCallbacks: [],
-  seenItems: initialLRU,
+  seenItems: deserialize(initialSerializedState).seenItems,
+  serverInitialized: false,
   sourceEntries: {},
-  subscribedSources: initialSubscribedSources
+  subscribedSources: deserialize(initialSerializedState).subscribedSources
 };
 
 const reducer = (state = initialState, action: IActions[keyof IActions]) => {
   switch (action.type) {
+    case SERVER_INITIALIZED: {
+      const serializedState = action.serializedState;
+      if (serializedState) {
+        const deserialized = deserialize(serializedState);
+        state.seenItems = deserialized.seenItems;
+        state.subscribedSources = deserialized.subscribedSources;
+      }
+      return { ...state, serverInitialized: true };
+    }
     case SOURCE_SUBSCRIBE: {
       const identifier = action.sourceIdentifier;
       state.subscribedSources[identifier] = new NewsSource(

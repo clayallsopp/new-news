@@ -6,18 +6,49 @@ import NavBar from "./NavBar";
 import NewsEntry from './NewsEntry';
 import NewsView from "./NewsView";
 import { EntryScrollCheckCallback, IState } from "./reducers";
+import server, { ISerializedState } from "./server";
 
 import "./App.css";
 
 interface IProps {
   scrollCallbacks?: EntryScrollCheckCallback[];
+  serverInitialized?: boolean;
   markEntriesAsSeen?: (entries: NewsEntry[]) => void;
+  initializeServer?: (serializedState: ISerializedState | null) => void;
 }
 
 class App extends React.Component<IProps> {
   private ticking: boolean;
+
+  public componentDidMount() {
+    if (!this.props.serverInitialized && this.props.initializeServer) {
+      const initializeServer = this.props.initializeServer;
+      server.subscribe((snapshot) => {
+        if (server.serverSavingLocally) {
+          return;
+        }
+        if (snapshot) {
+          const serializedState: ISerializedState = snapshot.val();
+          // Firebase doesn't serialize empty arrays
+          serializedState.seenItems = serializedState.seenItems || [];
+          serializedState.subscribedSources = serializedState.subscribedSources || [];
+          initializeServer(serializedState);
+        }
+        else {
+          initializeServer(null);
+        }
+
+      });
+    }
+  }
   
   public render() {
+    if (!this.props.serverInitialized) {
+      return  <div className="App">
+        <NavBar />
+      </div>;
+    }
+
     return (
       <div className="App">
         <NavBar />
@@ -49,6 +80,7 @@ class App extends React.Component<IProps> {
 const mapStateToProps = (state: IState, ownProps: IProps): Partial<IProps> => {
   return {
     scrollCallbacks: state.scrollCallbacks,
+    serverInitialized: state.serverInitialized,
   };
 };
 
@@ -56,6 +88,9 @@ const mapDispatchToProps = (dispatch: Dispatch<{}>): Partial<IProps> => {
   return {
     markEntriesAsSeen(entries: NewsEntry[]) {
       dispatch(actionCreators.markEntriesAsSeen(entries.map(e => e.id)));
+    },
+    initializeServer(serializedState: ISerializedState | null) {
+      dispatch(actionCreators.onServerInitialized(serializedState));
     }
   };
 };
