@@ -45,7 +45,9 @@ const serialize = (state: IState) => {
 };
 
 const deserialize = (serializedState: ISerializedState) => {
-  const seenItems = LRU<NewsEntryIdentifier, boolean>();
+  const seenItems = LRU<NewsEntryIdentifier, boolean>({
+    max: 500
+  });
   seenItems.load(serializedState.seenItems);
 
   const subscribedSources = serializedState.subscribedSources.reduce(
