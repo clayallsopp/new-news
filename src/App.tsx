@@ -28,11 +28,16 @@ class App extends React.Component<IProps> {
           return;
         }
         if (snapshot) {
-          const serializedState: ISerializedState = snapshot.val();
-          // Firebase doesn't serialize empty arrays
-          serializedState.seenItems = serializedState.seenItems || [];
-          serializedState.subscribedSources = serializedState.subscribedSources || [];
-          initializeServer(serializedState);
+          const serializedState = snapshot.val();
+          if (!serializedState) {
+            initializeServer(null);
+          }
+          else {
+            // Firebase doesn't serialize empty arrays
+            serializedState.seenItems = serializedState.seenItems || [];
+            serializedState.subscribedSources = serializedState.subscribedSources || [];
+            initializeServer(serializedState);
+          }
         }
         else {
           initializeServer(null);

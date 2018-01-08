@@ -24,15 +24,17 @@ export interface ISerializedState {
   seenItems: Array<LRU.LRUEntry<NewsEntryIdentifier, boolean>>;
 }
 
-const userId = "clay2";
+const userId = window.location.pathname.split("/")[1];
 const reference = database.ref("users/" + userId);
+
+interface IDataSnapshot extends firebase.database.DataSnapshot {
+  val(): ISerializedState | null;
+}
 
 const serverApi = {
   save: (datum: ISerializedState) => reference.set(datum),
   serverSavingLocally: false,
-  subscribe: (
-    cb: (a: firebase.database.DataSnapshot | null, b?: string) => any
-  ) => {
+  subscribe: (cb: (a: IDataSnapshot | null, b?: string) => any) => {
     return reference.on("value", cb);
   }
 };
