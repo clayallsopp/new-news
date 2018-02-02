@@ -2,6 +2,7 @@ import {
   ENTRY_MARK_SEEN,
   EntryScrollCheckCallback,
   IActions,
+  NIGHT_MODE_SET,
   SCROLL_CALLBACK_ADD,
   SERVER_INITIALIZED,
   SOURCE_START_LOAD,
@@ -32,6 +33,7 @@ export interface IState {
   seenItems: LRU.Cache<NewsEntryIdentifier, boolean>;
   scrollCallbacks: EntryScrollCheckCallback[];
   serverInitialized: boolean;
+  nightMode: boolean;
 }
 
 const serialize = (state: IState) => {
@@ -68,6 +70,7 @@ const initialSerializedState = {
 
 export const initialState: IState = {
   entries: {},
+  nightMode: false,
   scrollCallbacks: [],
   seenItems: deserialize(initialSerializedState).seenItems,
   serverInitialized: false,
@@ -136,6 +139,9 @@ const reducer = (state = initialState, action: IActions[keyof IActions]) => {
     case SCROLL_CALLBACK_ADD: {
       state.scrollCallbacks.push(action.callback);
       return { ...state };
+    }
+    case NIGHT_MODE_SET: {
+      return { ...state, nightMode: action.nightMode };
     }
     default:
       return { ...state };

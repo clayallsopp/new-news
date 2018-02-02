@@ -9,6 +9,7 @@ export const SOURCE_START_LOAD = "SOURCE_START_LOAD";
 export const SOURCE_STOP_LOAD = "SOURCE_STOP_LOAD";
 export const ENTRY_MARK_SEEN = "ENTRY_MARK_SEEN";
 export const SCROLL_CALLBACK_ADD = "SCROLL_CALLBACK_ADD";
+export const NIGHT_MODE_SET = "NIGHT_MODE_SET";
 
 export type EntryScrollCheckCallback = () => {
   seen: boolean;
@@ -46,6 +47,10 @@ export interface IActions {
     type: typeof SCROLL_CALLBACK_ADD;
     callback: EntryScrollCheckCallback;
   };
+  NIGHT_MODE_SET: {
+    type: typeof NIGHT_MODE_SET;
+    nightMode: boolean;
+  };
 }
 
 export const actionCreators = {
@@ -66,6 +71,10 @@ export const actionCreators = {
   ): IActions[typeof SERVER_INITIALIZED] => ({
     serializedState,
     type: SERVER_INITIALIZED
+  }),
+  setNightMode: (nightMode: boolean): IActions[typeof NIGHT_MODE_SET] => ({
+    nightMode,
+    type: NIGHT_MODE_SET
   }),
   startSourceLoad: (
     sourceIdentifier: NewsSourceIdentifier

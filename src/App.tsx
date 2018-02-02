@@ -1,3 +1,4 @@
+import { createMuiTheme, MuiThemeProvider } from 'material-ui/styles';
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 
@@ -8,9 +9,11 @@ import NewsView from "./NewsView";
 import { EntryScrollCheckCallback, IState } from "./reducers";
 import server, { ISerializedState } from "./server";
 
+
 import "./App.css";
 
 interface IProps {
+  nightMode?: boolean;
   scrollCallbacks?: EntryScrollCheckCallback[];
   serverInitialized?: boolean;
   markEntriesAsSeen?: (entries: NewsEntry[]) => void;
@@ -48,19 +51,28 @@ class App extends React.Component<IProps> {
   }
   
   public render() {
+    const theme = createMuiTheme({
+      palette: {
+        type: this.props.nightMode ? 'dark' : 'light',
+      },
+    });
     if (!this.props.serverInitialized) {
-      return  <div className="App">
-        <NavBar />
-      </div>;
+      return  <MuiThemeProvider theme={theme}>
+          <div className="App">
+          <NavBar />
+        </div>
+      </MuiThemeProvider>;
     }
 
     return (
-      <div className="App">
-        <NavBar />
-        <div className='AppContainer' ref={(ref) => ref && ref.addEventListener('scroll', this.onScroll)}>
-          <NewsView />
+      <MuiThemeProvider theme={theme}>
+        <div className="App">
+          <NavBar />
+          <div className='AppContainer' ref={(ref) => ref && ref.addEventListener('scroll', this.onScroll)}>
+            <NewsView />
+          </div>
         </div>
-      </div>
+      </MuiThemeProvider>
     );
   }
 
@@ -84,6 +96,7 @@ class App extends React.Component<IProps> {
 
 const mapStateToProps = (state: IState, ownProps: IProps): Partial<IProps> => {
   return {
+    nightMode: state.nightMode,
     scrollCallbacks: state.scrollCallbacks,
     serverInitialized: state.serverInitialized,
   };
