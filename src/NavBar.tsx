@@ -16,7 +16,7 @@ interface IProps {
 
 class NavBar extends React.Component<IProps> {
   public render() {
-    return <AppBar>
+    return <AppBar color='primary'>
       <Toolbar style={{ justifyContent: 'space-between' }}>
         <Typography type="title" color="inherit">
           The New News

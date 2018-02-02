@@ -1,4 +1,4 @@
-import { createMuiTheme, MuiThemeProvider } from 'material-ui/styles';
+import { createMuiTheme, MuiThemeProvider, Theme } from 'material-ui/styles';
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 
@@ -9,6 +9,7 @@ import NewsView from "./NewsView";
 import { EntryScrollCheckCallback, IState } from "./reducers";
 import server, { ISerializedState } from "./server";
 
+import grey from 'material-ui/colors/grey';
 
 import "./App.css";
 
@@ -22,6 +23,7 @@ interface IProps {
 
 class App extends React.Component<IProps> {
   private ticking: boolean;
+  private theme: Theme;
 
   public componentDidMount() {
     if (!this.props.serverInitialized && this.props.initializeServer) {
@@ -49,15 +51,21 @@ class App extends React.Component<IProps> {
       });
     }
   }
+
+  public componentDidUpdate() {
+    const htmlNode = document.getElementsByTagName('html')[0];
+    htmlNode.style.background = this.theme.palette.background.paper;
+  }
   
   public render() {
-    const theme = createMuiTheme({
+    this.theme = createMuiTheme({
       palette: {
+        primary: this.props.nightMode ? grey : undefined,
         type: this.props.nightMode ? 'dark' : 'light',
       },
     });
     if (!this.props.serverInitialized) {
-      return  <MuiThemeProvider theme={theme}>
+      return  <MuiThemeProvider theme={this.theme}>
           <div className="App">
           <NavBar />
         </div>
@@ -65,7 +73,7 @@ class App extends React.Component<IProps> {
     }
 
     return (
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={this.theme}>
         <div className="App">
           <NavBar />
           <div className='AppContainer' ref={(ref) => ref && ref.addEventListener('scroll', this.onScroll)}>
