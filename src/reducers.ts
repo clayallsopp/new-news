@@ -70,7 +70,7 @@ const initialSerializedState = {
 
 export const initialState: IState = {
   entries: {},
-  nightMode: false,
+  nightMode: (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches),
   scrollCallbacks: [],
   seenItems: deserialize(initialSerializedState).seenItems,
   serverInitialized: false,
