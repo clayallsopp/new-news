@@ -21,7 +21,7 @@ class NavBar extends React.Component<IProps> {
         <Typography type="title" color="inherit">
           The New News
         </Typography>
-        <Switch onChange={this.onSwitchChange} />
+        <Switch checked={this.props.nightMode} onChange={this.onSwitchChange} />
       </Toolbar>
     </AppBar>;
   }
