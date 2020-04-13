@@ -11,7 +11,7 @@ export const ENTRY_MARK_SEEN = "ENTRY_MARK_SEEN";
 export const SCROLL_CALLBACK_ADD = "SCROLL_CALLBACK_ADD";
 export const NIGHT_MODE_SET = "NIGHT_MODE_SET";
 
-export type EntryScrollCheckCallback = () => {
+export type EntryScrollCheckCallbackType = () => {
   seen: boolean;
   entry: NewsEntry | undefined;
   skip: boolean;
@@ -45,7 +45,7 @@ export interface IActions {
   };
   SCROLL_CALLBACK_ADD: {
     type: typeof SCROLL_CALLBACK_ADD;
-    callback: EntryScrollCheckCallback;
+    callback: EntryScrollCheckCallbackType;
   };
   NIGHT_MODE_SET: {
     type: typeof NIGHT_MODE_SET;
@@ -55,7 +55,7 @@ export interface IActions {
 
 export const actionCreators = {
   addEntryListener: (
-    callback: EntryScrollCheckCallback
+    callback: EntryScrollCheckCallbackType
   ): IActions[typeof SCROLL_CALLBACK_ADD] => ({
     callback,
     type: SCROLL_CALLBACK_ADD

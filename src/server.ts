@@ -34,7 +34,7 @@ interface IDataSnapshot extends firebase.database.DataSnapshot {
 const serverApi = {
   save: (datum: ISerializedState) => reference.set(datum),
   serverSavingLocally: false,
-  subscribe: (cb: (a: IDataSnapshot | null, b?: string) => any) => {
+  subscribe: (cb: (a: IDataSnapshot | null, b?: string | null | undefined) => any) => {
     return reference.on("value", cb);
   }
 };

@@ -22,8 +22,8 @@ interface IProps {
 }
 
 class App extends React.Component<IProps> {
-  private ticking: boolean;
-  private theme: Theme;
+  private ticking?: boolean;
+  private theme?: Theme;
 
   public componentDidMount() {
     if (!this.props.serverInitialized && this.props.initializeServer) {
@@ -54,9 +54,11 @@ class App extends React.Component<IProps> {
 
   public componentDidUpdate() {
     const htmlNode = document.getElementsByTagName('html')[0];
-    htmlNode.style.background = this.theme.palette.background.paper;
+    if (this.theme) {
+      htmlNode.style.background = this.theme.palette.background.paper;
+    }
   }
-  
+
   public render() {
     this.theme = createMuiTheme({
       palette: {
@@ -96,7 +98,7 @@ class App extends React.Component<IProps> {
           this.props.markEntriesAsSeen(entriesToSet);
         }
       }
-      this.ticking = false;      
+      this.ticking = false;
     });
     this.ticking = true;
   };

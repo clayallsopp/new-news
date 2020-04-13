@@ -49,10 +49,11 @@ const fetchSubredditEntries = (subreddit: string): Promise<NewsEntry[]> => {
     })
     .then(entries => {
       return entries.map(redditEntry => {
-        const newsEntry = new NewsEntry();
-        newsEntry.id = `reddit:${redditEntry.id}`;
-        newsEntry.title = redditEntry.title;
-        newsEntry.url = `https://reddit.com${redditEntry.permalink}`;
+        const newsEntry = new NewsEntry({
+          id: `reddit:${redditEntry.id}`,
+          title: redditEntry.title,
+          url: `https://reddit.com${redditEntry.permalink}`,
+        });
         return newsEntry;
       });
     });
@@ -68,8 +69,11 @@ const fetchHackerNewsEntries = (
     .then((ids: number[]) => {
       const promises = ids.slice(0, 25).map(id => {
         const internalIdentifier = `hn:${id}`;
-        const newsEntry = new NewsEntry();
-        newsEntry.id = internalIdentifier;
+        const newsEntry = new NewsEntry({
+          id: internalIdentifier,
+          title: '',
+          url: '',
+        });
         if (seenItems.get(internalIdentifier)) {
           return newsEntry;
         }
@@ -100,10 +104,11 @@ const fetchCNNEntries = () => {
     })
     .then(data => {
       return data.map(datum => {
-        const newsEntry = new NewsEntry();
-        newsEntry.id = `cnn:${hashCode(datum.url)}`;
-        newsEntry.title = datum.title;
-        newsEntry.url = datum.url;
+        const newsEntry = new NewsEntry({
+          id: `cnn:${hashCode(datum.url)}`,
+          title: datum.title,
+          url: datum.url,
+        });
         return newsEntry;
       });
     });

@@ -1,6 +1,6 @@
 import {
   ENTRY_MARK_SEEN,
-  EntryScrollCheckCallback,
+  EntryScrollCheckCallbackType,
   IActions,
   NIGHT_MODE_SET,
   SCROLL_CALLBACK_ADD,
@@ -11,14 +11,14 @@ import {
   SOURCE_UNSUBSCRIBE
 } from "./actions";
 
-import * as LRU from "lru-cache";
+import LRU from "lru-cache";
 
 import NewsEntry, { NewsEntryIdentifier } from "./NewsEntry";
 import NewsSource from "./NewsSource";
 
 import server, { ISerializedState } from "./server";
 
-export type EntryScrollCheckCallback = EntryScrollCheckCallback;
+export type EntryScrollCheckCallback = EntryScrollCheckCallbackType;
 
 export interface IState {
   subscribedSources: {
