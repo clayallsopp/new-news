@@ -48,7 +48,7 @@ const fetchSubredditEntries = (subreddit: string): Promise<NewsEntry[]> => {
       );
     })
     .then(entries => {
-      return entries.map(redditEntry => {
+      return entries.splice(0, 5).map(redditEntry => {
         const newsEntry = new NewsEntry({
           id: `reddit:${redditEntry.id}`,
           title: redditEntry.title,
